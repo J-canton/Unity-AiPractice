@@ -12,6 +12,9 @@ public class EnemyBehaviour : MonoBehaviour
     private int locationIndex = 0;
     private NavMeshAgent _agent;
 
+    private float currentDelay = 0.0f;
+    public float maxDelay = 0.5f;
+
     void Start() 
     {
         _agent = GetComponent<NavMeshAgent>();
@@ -20,9 +23,16 @@ public class EnemyBehaviour : MonoBehaviour
 
     void Update() 
     {
+
         if(_agent.remainingDistance < 0.5f && !_agent.pathPending)
         {
-            MoveToNextWaypoint();
+            currentDelay += Time.deltaTime;
+            if(currentDelay>maxDelay)
+            {
+                currentDelay = 0.0f;
+                MoveToNextWaypoint();
+            }
+            
         }    
     }
 
@@ -42,6 +52,16 @@ public class EnemyBehaviour : MonoBehaviour
         }
         _agent.SetDestination(waypoints[locationIndex].position);
         locationIndex = (locationIndex+1)%waypoints.Count;
+    }
+
+    void MoveToRandomWayPoint()
+    {
+        if(waypoints.Count == 0)
+        {
+            return;
+        }
+        _agent.SetDestination(waypoints[locationIndex].position);
+        locationIndex = Random.Range(0, waypoints.Count);
     }
     private void OnTriggerEnter(Collider other) 
     {
