@@ -41,6 +41,7 @@ public class EnemyBehaviour : MonoBehaviour
             return;
         }
         _agent.SetDestination(waypoints[locationIndex].position);
+        locationIndex = (locationIndex+1)%waypoints.Count;
     }
     private void OnTriggerEnter(Collider other) 
     {
